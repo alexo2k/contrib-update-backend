@@ -38,12 +38,12 @@ class ContribController extends Controller
     public function show(Request $request)
     {
         $auxEmp = $request->input('employee', null);
-        $aux = json_decode($auxEmp);
-        $token = $request->header('tokenapp');
+        $employeeParams = json_decode($auxEmp);
+        $token = $request->header('tokenapp', null);
         $validUser = TokenProvider::validateToken($auxEmp, $token);
 
         if($validUser) {
-            $empleado = Contribution::where('Id_empleado', $idEmpleado)->first();
+            $empleado = Contribution::where('Id_empleado', $employeeParams->id_empleado)->first();
 
             if($empleado) {
                 return response()->json(array(

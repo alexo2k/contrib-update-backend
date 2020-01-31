@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Employee;
 use TokenProvider;
 use App\EmployeeDocBox;
+use App\EstadosDocBox;
 
 class LoginController extends Controller
 {
@@ -43,6 +44,8 @@ class LoginController extends Controller
         $empleadoParam = json_decode($json);
 
         $empleadoDocBox = EmployeeDocBox::where('Filiacion', $empleadoParam->rfcEmpleado)->first();
+        // var_dump($empleadoDocBox);
+        // die();
 
         if($empleadoDocBox) {
             return response()->json(array(
@@ -66,29 +69,62 @@ class LoginController extends Controller
         // $result = TokenProvider::validateToken($newEmp, $aux);
         // var_dump($result);
         // die();
+        $empleadoDocBoxId = null;
+        $estadoDocBox = null;
 
         $json = $request->input('userpass', null);
         $passwordParam = json_decode($json);
         
         $empleadosResult = DB::select('SELECT ValidaCredencial(\'' . $passwordParam->passuser . '\') AS Id_Empleado');
-        
+
         if($empleadosResult) {
+
             foreach($empleadosResult as $result) {
                 $auxIdEmpleado = $result -> Id_Empleado;
             }
+
             $empleado = Employee::find($auxIdEmpleado);
-            if($empleado) {
+
+            if($empleado) { 
 
                 try {
+
                     DB::select('UPDATE StatusEmpleado SET UltimaVisita = now() WHERE Id_Empleado =' . $auxIdEmpleado);
+                    $auxEmpleadoDocBox = EmployeeDocBox::where('Filiacion', $empleado->RFC)->first();
+
+                    if($auxEmpleadoDocBox) {
+                        $empleadoDocBoxId = $auxEmpleadoDocBox->id_trabajador;
+                        $auxEstadosDocBox = DB::connection('docBoxDB')->select('SELECT * FROM estados where id_trabajador = ' . $empleadoDocBoxId);
+
+                        if($auxEstadosDocBox) {
+                            
+                            foreach($auxEstadosDocBox as $result) {
+                                $estadoDocBox = array(
+                                    'idEstadoDocBox' => $result->Id_Estado,
+                                    'EstadoDocBox' => $result->Estados
+                                );
+                            }
+                        } else {
+                            $estadoDocBox = array(
+                                'idEstadoDocBox' => '0',
+                                'EstadoDocBox' => 'none'
+                            );
+                        }
+                    } else {
+                        $empleadoDocBoxId = 0;
+                    }
+
                 } catch(Exception $ex) {
                     // Insertar nuevo empleado
                 }
 
 
                 $accessToken = TokenProvider::makeToken($empleado);
+
                 return response()->json(array(
                     'empleado' => $empleado,
+                    'empleadoDocBoxId' => $empleadoDocBoxId,
+                    'estadoDocBox' => $estadoDocBox,
                     'token' => $accessToken,
                     'status' => 'success'
                 ), 200);

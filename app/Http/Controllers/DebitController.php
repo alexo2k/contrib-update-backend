@@ -18,12 +18,12 @@ class DebitController extends Controller
     public function show(Request $request)
     {
         $auxEmp = $request->input('employee', null);
-        $aux = json_decode($auxEmp);
-        $token = $request->header('tokenapp');
+        $employeeParams = json_decode($auxEmp);
+        $token = $request->header('tokenapp', null);
         $validUser = TokenProvider::validateToken($auxEmp, $token);
         
         if($validUser) {
-            $adeudo = Debit::where('Id_empleado', $idEmpleado)->first();
+            $adeudo = Debit::where('Id_empleado', $employeeParams->id_empleado)->first();
 
             if($adeudo) {
                 return response()->json(array(

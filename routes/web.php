@@ -14,10 +14,13 @@
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('aportacion', 'ContribController@index');
-Route::get('aportacion/{idEmpleado}', 'ContribController@show');
-Route::get('adeudo/{idEmpleado}', 'DebitController@show');
+// Route::get('aportacion', 'ContribController@index');
+// Route::get('aportacion/{idEmpleado}', 'ContribController@show');
+// Route::get('adeudo/{idEmpleado}', 'DebitController@show');
+Route::post('aportacion', 'ContribController@show');
+Route::post('adeudo', 'DebitController@show');
 Route::post('login/acceso', 'LoginController@validaAcceso');
 // Route::post('docbox/{rfcEmpleado}','LoginController@recuperaIdDocBox');
 Route::post('docbox/obtenEmpleado', 'LoginController@recuperaIdDocBox');
+Route::post('docbox/tramites', 'DockBoxController@tramitesEmpleado');
 
