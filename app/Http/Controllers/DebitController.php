@@ -6,24 +6,28 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Debit;
 use TokenProvider;
+use App\Employee;
 
 class DebitController extends Controller
 {
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Request $request)
+    public function recuperaAdeudo(Request $request)
     {
         $auxEmp = $request->input('employee', null);
         $employeeParams = json_decode($auxEmp);
+        $employeeModel = new Employee();
+
+        $employeeModel->Id_Empleado = $employeeParams->Id_Empleado;
+        $employeeModel->ApPaterno = $employeeParams->ApPaterno;
+        $employeeModel->ApMaterno = $employeeParams->ApMaterno;
+        $employeeModel->Nombre = $employeeParams->Nombre;
+        $employeeModel->RFC = $employeeParams->RFC;
+
         $token = $request->header('tokenapp', null);
-        $validUser = TokenProvider::validateToken($auxEmp, $token);
+
+        $validUser = TokenProvider::validateToken($employeeModel, $token);
         
         if($validUser) {
-            $adeudo = Debit::where('Id_empleado', $employeeParams->id_empleado)->first();
+            $adeudo = Debit::where('Id_empleado', $employeeParams->Id_Empleado)->first();
 
             if($adeudo) {
                 return response()->json(array(
@@ -32,13 +36,13 @@ class DebitController extends Controller
                 ), 200);   
             } else {
                 return response()->json(array(
-                    'message' => 'No se encontró el empleado',
+                    'message' => 'No se encontro el empleado',
                     'status' => 'error',
                 ), 400);
             }
         } else {
             return response()->json(array(
-                'message' => 'Las credenciales no son válidas',
+                'message' => 'Las credenciales no son validas',
                 'status' => 'error'
             ), 401);
         }

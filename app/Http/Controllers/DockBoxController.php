@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use TokenProvider;
 use Illuminate\Support\Facades\DB;
+use App\Employee;
 
 class DockBoxController extends Controller
 {
@@ -12,9 +13,18 @@ class DockBoxController extends Controller
         
         $auxIdDocBox = $request->input('idDocBox', null);
         $auxEmp = $request->input('employee', null);
-        $aux = json_decode($auxEmp);
-        $token = $request->header('tokenapp');
-        $validUser = TokenProvider::validateToken($auxEmp, $token);
+        $employeeParams = json_decode($auxEmp);
+        $employeeModel = new Employee();
+
+        $employeeModel->Id_Empleado = $employeeParams->Id_Empleado;
+        $employeeModel->ApPaterno = $employeeParams->ApPaterno;
+        $employeeModel->ApMaterno = $employeeParams->ApMaterno;
+        $employeeModel->Nombre = $employeeParams->Nombre;
+        $employeeModel->RFC = $employeeParams->RFC;
+
+        $token = $request->header('tokenapp', null);
+
+        $validUser = TokenProvider::validateToken($employeeModel, $token);
 
         if($validUser) {
             $auxTramites = DB::connection('docBoxDB')->select('SELECT info.asunto, info.fecha_recepcion, secre.secretaria, info.estatus from informacion info join secretarias secre on info.id_secretaria = secre.Id_Secretaria where info.id_trabajador = 200');

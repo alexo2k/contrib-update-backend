@@ -11,41 +11,12 @@ use App\EstadosDocBox;
 
 class LoginController extends Controller
 {
-    // public function index()
-    // {
-        
-    // }
-
-    // public function show($idEmpleado)
-    // {
-    //     $empleado = Employee::find($idEmpleado);
-
-    //     if($empleado) {
-    //         return response()->json(array(
-    //             'empleado' => $empleado,
-    //             'status' => 'success'
-    //         ), 200);
-    //     } else {
-    //         return response()->json(array(
-    //             'message' => 'No se encontró registro',
-    //             'status' => 'error'
-    //         ), 400);
-    //     }
-    // }
-
-    // public function recuperaDocBox(Request $request) {
-    //     $json = $request->input('rfcEmpleado', null);
-    //     $rfcEmployee = json_decode($json);
-    // }
-
     public function recuperaIdDocBox(Request $request) {
 
         $json = $request->input('rfcEmpleado', null);
         $empleadoParam = json_decode($json);
 
         $empleadoDocBox = EmployeeDocBox::where('Filiacion', $empleadoParam->rfcEmpleado)->first();
-        // var_dump($empleadoDocBox);
-        // die();
 
         if($empleadoDocBox) {
             return response()->json(array(
@@ -67,8 +38,7 @@ class LoginController extends Controller
         // $aux = \App\Helpers\AppHelper::instance()->saluda();
         // $aux = TokenProvider::makeToken($newEmp);
         // $result = TokenProvider::validateToken($newEmp, $aux);
-        // var_dump($result);
-        // die();
+
         $empleadoDocBoxId = null;
         $estadoDocBox = null;
 
