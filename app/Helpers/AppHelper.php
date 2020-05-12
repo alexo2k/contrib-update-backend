@@ -10,10 +10,6 @@ class AppHelper
         return $auxToken;
     }
 
-    public static function saluda() {
-        return "hola";
-    }
-
     public static function validateToken(Employee $pEmployee, $token) {
         $generatedToken = AppHelper::makeToken($pEmployee);
         if($token == $generatedToken) {
