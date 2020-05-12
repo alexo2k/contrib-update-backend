@@ -1,11 +1,10 @@
 <?php
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 Route::post('aportacion', 'ContribController@recuperaAportacion');
 Route::post('adeudo', 'DebitController@recuperaAdeudo');
 Route::post('login/acceso', 'LoginController@validaAcceso');
-// Route::post('docbox/obtenEmpleado', 'LoginController@recuperaIdDocBox');
 Route::post('docbox/tramites', 'DockBoxController@tramitesEmpleado');
 Route::post('docbox/secretaria', 'DockBoxController@tramitesSecretaria');
