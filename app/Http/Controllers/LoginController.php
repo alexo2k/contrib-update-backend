@@ -8,6 +8,7 @@ use App\Employee;
 use TokenProvider;
 use App\EmployeeDocBox;
 use App\EstadosDocBox;
+use GuzzleHttp\Client;
 
 class LoginController extends Controller
 {
@@ -111,5 +112,26 @@ class LoginController extends Controller
                 'status' => 'error'
             ), 400);
         }
+    }
+
+    public function validaCaptcha(Request $request) {
+        
+        $recaptchaKey = "6LclvqgZAAAAAPTcy0-98_sHB1b2f65fgFf-moyc";
+        $url = "https://www.google.com/recaptcha/api/siteverify";
+        
+        $json = $request->input('tokenCaptcha', null);
+        $tokenCaptcha = json_decode($json);
+
+        $client = new Client();
+
+        $response = $client->request('POST', $url, [
+            'query' => [
+                'secret' => $recaptchaKey,
+                'response' => $tokenCaptcha->token
+            ]
+        ]);
+
+        return $response->getBody()->getContents();
+
     }
 }
