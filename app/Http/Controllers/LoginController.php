@@ -119,17 +119,24 @@ class LoginController extends Controller
         $recaptchaKey = "6LclvqgZAAAAAPTcy0-98_sHB1b2f65fgFf-moyc";
         $url = "https://www.google.com/recaptcha/api/siteverify";
         
-        $json = $request->input('tokenCaptcha', null);
-        $tokenCaptcha = json_decode($json);
+        // $json = $request->input('tokenCaptcha', null);
+        // $tokenCaptcha = json_decode($json);
+        $json = $request->input('token');
 
         $client = new Client();
+
+        // var_dump($tokenCaptcha);
 
         $response = $client->request('POST', $url, [
             'query' => [
                 'secret' => $recaptchaKey,
-                'response' => $tokenCaptcha->token
+                // 'response' => $tokenCaptcha->token
+                'response' => $json
             ]
         ]);
+
+            // var_dump($tokenCaptcha);
+            // die();
 
         if($response) {
             $responsed = $response->getBody()->getContents();
