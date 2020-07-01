@@ -131,7 +131,26 @@ class LoginController extends Controller
             ]
         ]);
 
-        return $response->getBody()->getContents();
+        if($response) {
+            $responsed = $response->getBody()->getContents();
+            $jsonedResponse = json_decode($responsed);
 
+            if($jsonedResponse->success) {
+                return response()->json(array(
+                    'message' => 'Se ha validado',
+                    'status' => 'success'
+                ), 200);
+            } else {
+                return response()->json(array(
+                    'message' => $jsonedResponse->{'error-codes'},
+                    'status' => 'error'
+                ), 400);
+            }
+        } else {
+            return response()->json(array(
+                'message' => $respone,
+                'status' => 'error'
+            ), 400);
+        }
     }
 }
