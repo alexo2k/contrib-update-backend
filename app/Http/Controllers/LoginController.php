@@ -43,10 +43,12 @@ class LoginController extends Controller
         $empleadoDocBoxId = null;
         $estadoDocBox = null;
 
-        $json = $request->input('userpass', null);
-        $passwordParam = json_decode($json);
+        // $json = $request->input('userpass', null);
+        // $passwordParam = json_decode($json);
+        $json = $request->input('passuser', null);
         
-        $empleadosResult = DB::select('SELECT ValidaCredencial(\'' . $passwordParam->passuser . '\') AS Id_Empleado');
+        // $empleadosResult = DB::select('SELECT ValidaCredencial(\'' . $passwordParam->passuser . '\') AS Id_Empleado');
+        $empleadosResult = DB::select('SELECT ValidaCredencial(\'' . $json . '\') AS Id_Empleado');
 
         if($empleadosResult) {
 
